@@ -1,4 +1,4 @@
-release: "stage"
+release: "pet-battle-stage"
 source: "http://nexus:8081/repository/helm-charts/"
 ##############
 # Argo Apps declaration
@@ -36,11 +36,11 @@ applications:
     values:
       image_version: latest # container image version
       config_map: '{
-        "catsUrl": "https://pet-battle-api-ateam-stage.apps.cluster-lwvmc.lwvmc.sandbox1482.opentlc.com",
-        "tournamentsUrl": "https://pet-battle-tournament-my-team-stage.apps.cluster-lwvmc.lwvmc.sandbox1482.opentlc.com",
+        "catsUrl": "https://pet-battle-api-my-team-pet-battle-stage.apps.cluster-lwvmc.lwvmc.sandbox1482.opentlc.com",
+        "tournamentsUrl": "https://pet-battle-tournament-my-team-pet-battle-stage.apps.cluster-lwvmc.lwvmc.sandbox1482.opentlc.com",
         "matomoUrl": "https://matomo-my-team-ci-cd.apps.cluster-lwvmc.lwvmc.sandbox1482.opentlc.com/",
         "keycloak": {
-          "url": "https://keycloak-my-team-stage.apps.cluster-lwvmc.lwvmc.sandbox1482.opentlc.com/auth/",
+          "url": "https://keycloak-my-team-pet-battle-stage.apps.cluster-lwvmc.lwvmc.sandbox1482.opentlc.com/auth/",
           "realm": "pbrealm",
           "clientId": "pbclient",
           "redirectUri": "http://localhost:4200/tournament",

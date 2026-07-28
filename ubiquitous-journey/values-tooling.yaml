@@ -1,36 +1,5 @@
-# gloabl vars
-ci_cd_namespace: &ci_cd "labs-ci-cd"
-dev_namespace: &dev "labs-dev"
-test_namespace: &test "labs-test"
-staging_namespace: &stage "labs-staging"
-
 # App of applications list
 applications:
-  # Bootstrap Project — creates team namespaces with RBAC and optional OperatorGroups.
-  # Using our helm-catalog/bootstrap-project chart instead of the community redhat-cop version.
-  # Key addition: every namespace is auto-labelled argocd.argoproj.io/managed-by: my-team-gitops
-  # so the team ArgoCD SA gains deploy rights without any platform team involvement.
-  #
-  # Namespace naming convention (derived automatically):
-  #   my-team-tools                  — CI/CD tooling (always created)
-  #   my-team-<system>-<env>         — one per system × env combination
-  # Bootstrap is DISABLED here — namespace creation cannot run on the team ArgoCD.
-  # The OpenShift GitOps operator runs team ArgoCD instances in namespaced mode, which
-  # prevents them from managing cluster-scoped resources (Namespace objects) regardless
-  # of Kubernetes RBAC.
-  #
-  # Namespace creation is handled by the platform ArgoCD via a multi-source Application
-  # (platform-apps/templates/spoke/team-bootstrap-app.yaml) that reads team-spaces.yaml
-  # from the ROOT of this repo. To add or remove namespaces, edit team-spaces.yaml
-  # and commit — no platform team involvement required.
-  - name: bootstrap
-    enabled: false
-    source: https://github.com/nu-j/helm-catalog.git
-    source_path: bootstrap-project
-    source_ref: main
-    values:
-      team: my-team
-
    # Hoverfly
   - name: hoverfly
     enabled: true
@@ -61,7 +30,6 @@ applications:
 # Nexus
 
 # Sealed Secrets
-
 
 # Sonarqube
 
