@@ -13,6 +13,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  # namespace ensures every Application CR lands in the team ArgoCD namespace regardless
+  # of spec.destination.namespace. The team ArgoCD controller only watches this namespace,
+  # so omitting it would cause Application CRs to be placed in spec.destination.namespace
+  # (e.g. my-team-ci-cd) where the controller cannot see or reconcile them.
+  namespace: {{ $team }}-gitops
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 {{- if ne $release "ci-cd" }}

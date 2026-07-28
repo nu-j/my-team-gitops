@@ -5,20 +5,27 @@ team: my-team
 release: ci-cd
 applications:
   # Tooling to support CI/CD
+  # destination: my-team-gitops — this is an app-of-apps: its "workloads" are Application CRs
+  # that must land in the team ArgoCD namespace so the controller can watch and reconcile them.
+  # Without this override the default destination (my-team-ci-cd) is used, and because
+  # my-team-ci-cd does not yet exist the team ArgoCD refuses to sync the whole chain.
   - name: ubiquitous-journey
     enabled: true
+    destination: my-team-gitops
     source_path: "."
     helm_values:
       - ubiquitous-journey/values-tooling.yaml
-  # Test app of app
+  # Test app of app — also app-of-apps, Application CRs must land in my-team-gitops
   - name: test-app-of-pb
     enabled: true
+    destination: my-team-gitops
     source_path: "."
     helm_values:
       - pet-battle/test/values.yaml
-  # Staging App of Apps
+  # Staging App of Apps — also app-of-apps, Application CRs must land in my-team-gitops
   - name: staging-app-of-pb
     enabled: true
+    destination: my-team-gitops
     source_path: "."
     helm_values:
       - pet-battle/stage/values.yaml
