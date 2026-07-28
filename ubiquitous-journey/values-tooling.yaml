@@ -16,6 +16,13 @@ applications:
   #   my-team-<system>-<env>         — one per system × env combination
   - name: bootstrap
     enabled: true
+    # destination is overridden to my-team-gitops (the team ArgoCD's own namespace) so
+    # the team ArgoCD can reconcile this Application before my-team-ci-cd exists.
+    # bootstrap-project creates Namespace objects (cluster-scoped) — the destination
+    # namespace is just a landing spot for any non-namespaced resources, not where
+    # namespaces themselves are created. Removing this override would cause a
+    # chicken-and-egg: the namespace bootstrap creates is the one it would need to deploy into.
+    destination: my-team-gitops
     source: https://github.com/nu-j/helm-catalog.git
     source_path: bootstrap-project
     source_ref: main
