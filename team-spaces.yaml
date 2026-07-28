@@ -1,0 +1,50 @@
+#
+# team-spaces.yaml — team-owned namespace and RBAC configuration.
+#
+# This file is read by the platform ArgoCD via a multi-source Application
+# (platform-apps/templates/spoke/team-bootstrap-app.yaml). The platform ArgoCD
+# has cluster-wide access and can create Namespace objects; the team ArgoCD
+# (namespaced mode) cannot.
+#
+# SELF-SERVICE: to add or remove a namespace, edit this file and commit.
+# The platform ArgoCD polls this repo and reconciles automatically — no
+# platform team involvement required.
+#
+# Schema: mirrors helm-catalog/bootstrap-project/values.yaml
+#
+#   team:   short name — must match the team ArgoCD namespace: <team>-gitops
+#   bindings: RoleBindings applied to every namespace (tools + all system-env)
+#   systems: each entry generates <team>-<system>-<env> namespaces
+#             operatorgroup: true — creates an OperatorGroup so the team can
+#             install namespace-scoped OLM operators (e.g. a team Kafka instance)
+#
+# Naming convention (team: my-team, system: pet-battle, envs: [dev, test, stage]):
+#   my-team-ci-cd               ← primary CI/CD tooling namespace (always created)
+#   my-team-pet-battle-dev
+#   my-team-pet-battle-test
+#   my-team-pet-battle-stage
+#
+# Every namespace is labelled argocd.argoproj.io/managed-by: my-team-gitops
+# The OpenShift GitOps operator detects this and grants the team ArgoCD SA
+# deploy rights automatically — no further platform action required.
+#
+
+team: my-team
+
+# bindings: applied to every namespace (ci-cd + all system-env namespaces).
+# Use Group kind for AD/GitHub groups, ServiceAccount for automation accounts.
+bindings:
+  - name: my-team-devs
+    kind: Group
+    role: edit
+  - name: my-team-admins
+    kind: Group
+    role: admin
+
+# systems: each entry generates one namespace per env.
+# operatorgroup: true is needed when the team wants to install namespace-scoped
+# OLM operators (e.g. a team-specific Kafka, Grafana, or KEDA instance).
+systems:
+  - name: pet-battle
+    envs: [dev, test, stage]
+    operatorgroup: true

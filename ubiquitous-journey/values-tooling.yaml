@@ -14,31 +14,22 @@ applications:
   # Namespace naming convention (derived automatically):
   #   my-team-tools                  — CI/CD tooling (always created)
   #   my-team-<system>-<env>         — one per system × env combination
+  # Bootstrap is DISABLED here — namespace creation cannot run on the team ArgoCD.
+  # The OpenShift GitOps operator runs team ArgoCD instances in namespaced mode, which
+  # prevents them from managing cluster-scoped resources (Namespace objects) regardless
+  # of Kubernetes RBAC.
+  #
+  # Namespace creation is handled by the platform ArgoCD via a multi-source Application
+  # (platform-apps/templates/spoke/team-bootstrap-app.yaml) that reads team-spaces.yaml
+  # from the ROOT of this repo. To add or remove namespaces, edit team-spaces.yaml
+  # and commit — no platform team involvement required.
   - name: bootstrap
-    enabled: true
-    # destination is overridden to my-team-gitops (the team ArgoCD's own namespace) so
-    # the team ArgoCD can reconcile this Application before my-team-ci-cd exists.
-    # bootstrap-project creates Namespace objects (cluster-scoped) — the destination
-    # namespace is just a landing spot for any non-namespaced resources, not where
-    # namespaces themselves are created. Removing this override would cause a
-    # chicken-and-egg: the namespace bootstrap creates is the one it would need to deploy into.
-    destination: my-team-gitops
+    enabled: false
     source: https://github.com/nu-j/helm-catalog.git
     source_path: bootstrap-project
     source_ref: main
     values:
       team: my-team
-      bindings:
-        - name: my-team-devs
-          kind: Group
-          role: edit
-        - name: my-team-admins
-          kind: Group
-          role: admin
-      systems:
-        - name: pet-battle
-          envs: [dev, test, stage]
-          operatorgroup: true
 
    # Hoverfly
   - name: hoverfly
