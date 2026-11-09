@@ -48,3 +48,5 @@ systems:
   - name: pet-battle
     envs: [dev, test, stage]
     operatorgroup: true
+  - name: payments-ingestion
+    envs: [test, sit]
